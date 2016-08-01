@@ -1,2 +1,5 @@
-# RenderScriptSample
-An example application demonstrating image manipulation with a simple RenderScript.
+# RenderScript Example App
+
+A basic example app demonstrating image manipulation with RenderScript.
+
+![Demo GIF](http://i.imgur.com/YWBnAnt.gif)
