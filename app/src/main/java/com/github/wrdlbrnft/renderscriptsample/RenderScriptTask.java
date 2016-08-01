@@ -20,15 +20,15 @@ class RenderScriptTask extends AsyncTask<Void, Void, Bitmap> {
     private final Allocation mOutputAllocation;
     private final Bitmap mOutputBitmap;
     private final ScriptC_saturation mScript;
-    private final float mSaturationValue;
+    private final float mSaturationLevel;
 
-    RenderScriptTask(ImageView outputView, Allocation inputAllocation, Allocation outputAllocation, Bitmap outputBitmap, ScriptC_saturation script, float saturationValue) {
+    RenderScriptTask(ImageView outputView, Allocation inputAllocation, Allocation outputAllocation, Bitmap outputBitmap, ScriptC_saturation script, float saturationLevel) {
         mOutputViewReference = new WeakReference<>(outputView);
         mInputAllocation = inputAllocation;
         mOutputAllocation = outputAllocation;
         mOutputBitmap = outputBitmap;
         mScript = script;
-        mSaturationValue = saturationValue;
+        mSaturationLevel = saturationLevel;
     }
 
     protected Bitmap doInBackground(Void... values) {
@@ -37,7 +37,7 @@ class RenderScriptTask extends AsyncTask<Void, Void, Bitmap> {
         }
 
         // First we set the saturation level on the Script
-        mScript.set_saturationValue(mSaturationValue);
+        mScript.set_saturationLevel(mSaturationLevel);
 
         // Now we invoke our defined Kernel
         mScript.forEach_saturation(mInputAllocation, mOutputAllocation);
@@ -63,6 +63,13 @@ class RenderScriptTask extends AsyncTask<Void, Void, Bitmap> {
         }
 
         // Otherwise set the result image to the output View
+        // Technically we don't need to set the bitmap again
+        // since the output Bitmap is already set to the ImageView
+        // and we always copy the new data to that same Bitmap
+        // which automatically redraws the changes to the ImageView,
+        // but on some devices and API levels there are bugs which
+        // cause this not to work so just to be safe we always set
+        // the image again anyway.
         outputView.setImageBitmap(result);
     }
 }
